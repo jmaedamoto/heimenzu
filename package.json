@@ -10,8 +10,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@types/node": "^20.14.10",
+    "axios": "^1.7.2",
+    "buffer": "^6.0.3",
+    "csv-parse": "^5.5.6",
+    "fs": "^0.0.1-security",
+    "jotai": "^2.9.0",
+    "memfs": "^4.9.3",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-query": "^3.39.3"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
@@ -23,6 +32,7 @@
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-react-refresh": "^0.4.7",
     "typescript": "^5.2.2",
-    "vite": "^5.3.1"
+    "vite": "^5.3.1",
+    "vite-plugin-node-polyfills": "^0.22.0"
   }
 }
