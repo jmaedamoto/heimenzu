@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import  { css } from '@emotion/react'
-import { MapSize } from './App'
+import { MapSize } from './MapArea' 
 
 const imgUrl = new URL('./assets/大阪_A_大阪北部_500_EPT_注意報.png', import.meta.url).href
 

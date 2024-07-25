@@ -6,7 +6,7 @@ import mapImage from './assets/map.jpg'
 import { parse } from 'csv-parse/sync'
 import { Cell } from './Cell'
 import { useState } from 'react'
-import { MapSize } from './App'
+import { MapSize } from './MapArea' 
 
 export const CsvMap = ({csv,title, colortype, size}: {csv:string,title:string,colortype:string,size:MapSize}) =>  {
   if(!csv || csv.includes("<html")){

@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import  { css } from '@emotion/react'
 import {color} from './ColorScheme'
-import { MapSize } from './App'
+import { MapSize } from './MapArea'
 
 export const Cell = ({val, size,colortype,updatePosition}:{val:number, size:MapSize ,colortype:string,updatePosition: () => void}) => {
   
