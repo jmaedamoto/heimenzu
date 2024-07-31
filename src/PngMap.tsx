@@ -1,24 +1,20 @@
-/** @jsxImportSource @emotion/react */
-import  { css } from '@emotion/react'
-import { MapSize } from './MapArea' 
+import { useAtom } from "jotai"
+import { MapSize } from "./MapArea" 
+import { modalSettingAtom, PngDataSetting } from "./state"
 
-const imgUrl = new URL('./assets/大阪_A_大阪北部_500_EPT_注意報.png', import.meta.url).href
-
-export const PngMap = ({url,title, size}: {url:string,title:string, size:MapSize}) =>  {
+export const PngMap = ({setting}: {setting:PngDataSetting}) =>  {
+  const [_,setModalSetting] = useAtom(modalSettingAtom)
+  const openModal = () => setModalSetting({isOpen:true, setting:setting})
+  const {title,url,size} = setting
   return (
     <>
       <div className="status">{title}</div>
-      <div
-        className="map"
-        css={css`
-          background:url(${url || imgUrl}) no-repeat top center / ${size == MapSize.Small ? "650px 520px" : "1300px 1040px"};
-          height: ${size == MapSize.Small ? "520px" : "1040px"};
-          width: ${size == MapSize.Small ? "650px" : "1300px"};
-          padding:0;
-          position: relative;
-        `}
-      >
-      </div>
+      <img 
+        src={url} 
+        height={size == MapSize.Small ? "520px" : "1040px"}
+        width={size == MapSize.Small ? "650px" : "1300px"}
+        onClick={openModal}
+      />
     </>
   )
 }

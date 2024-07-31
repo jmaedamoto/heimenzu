@@ -1,17 +1,31 @@
 import { atom } from 'jotai'
+import { MapSize } from './MapArea'
 
-export interface DataSetting{
-  prefecture:string,
-  region:string,
-  plane:string,
-  element:string,
-  method:string
+export type CsvDataSetting = {
+  type:"csv",
+  records: number[][],
+  title:string,
+  colortype: string,
+  size: MapSize
+  remarkPoints:number[][]
 }
 
-export const dataSettingAtom=atom<DataSetting[]>([{
-  prefecture:"大阪",
-  region:"A_大阪北部",
-  plane:"500",
-  element:"EPT",
-  method:"差分（警報以上-注意報）_t検定p値"
-}])
+export type PngDataSetting = {
+  type:"png",
+  url: string,
+  title:string,
+  size: MapSize
+}
+
+export type Setting = CsvDataSetting | PngDataSetting
+
+export type ModalSetting = {
+  isOpen : boolean,
+  setting?: Setting
+}
+
+export const settingAtom = atom<Setting[]>([])
+
+export const modalSettingAtom = atom<ModalSetting>({
+  isOpen:false,
+})
