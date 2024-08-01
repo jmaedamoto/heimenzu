@@ -98,8 +98,8 @@ const methods: Methods = {
 }
 
 const getPrefix = (prefecture:string,region:string,plane:string,element:string,method: string) => {
-  //let root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_A"
-  let root = "./assets"
+  let root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_A"
+  //let root = "./"
   if(prefecture.includes("（B地点）")){
     prefecture = prefecture.replace("（B地点）", "")
     root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_B"
@@ -110,13 +110,15 @@ const getPrefix = (prefecture:string,region:string,plane:string,element:string,m
 }
 
 const fetchCsv = async (url:string) => {
-  const tmpurl = new URL(url, import.meta.url).href
+  //const tmpurl = new URL(url, import.meta.url).href
+  const tmpurl = url
+  
   const data = (await axios.get(tmpurl)).data
   if(!data || data.includes("html")){return []}
-  const records = parse(data,{from_line: 2}).map((row: number[]) => {
+  const records = parse(data,{from_line: 2}).map((row: string[]) => {
     row.shift()
     return row
-  }) as number[][];
+  }) as string[][];
   return records
 }
 
@@ -138,7 +140,8 @@ const processDatum  = async (data:Data, prefecture:string,region:string,plane:st
   switch( data.type){
     case "png": {
       const [root,title] = getPrefix(prefecture,region,plane,element,data.prefix)
-      const url = new URL(`${root}/${title}.png`, import.meta.url).href
+      //const url = new URL(`${root}/${title}.png`, import.meta.url).href
+      const url = `${root}/${title}.png`
       const setting:PngDataSetting =  {
         type:"png",
         url,
@@ -152,8 +155,8 @@ const processDatum  = async (data:Data, prefecture:string,region:string,plane:st
       const [records,refRecords] = await fetchDiffCsv(data,prefecture,region,plane,element)
       const remarkPoints = 
         refRecords.map((row, i) => row.map((val,j) => [val,i,j])).flat()
-        .filter((record) => record[0] < 0.01 && record[0] > 0)
-        .map((record) => [record[1],record[2]])
+        .filter((record) => record[0] && Number(record[0]) < 0.01 && Number(record[0]) > 0)
+        .map((record) => [Number(record[1]),Number(record[2])])
       const setting:CsvDataSetting = {
         type:"csv",
         records,
@@ -192,6 +195,7 @@ export const Menu = () => {
   const view = async () => {    
     const size = methods[method].length > 1 ? MapSize.Small : MapSize.Learge
     const setting = await Promise.all(methods[method].map(d => processDatum(d,prefecture,region,plane,element,size)))
+    console.log(setting)
     setSetting(setting)
   }
 

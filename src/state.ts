@@ -3,7 +3,7 @@ import { MapSize } from './MapArea'
 
 export type CsvDataSetting = {
   type:"csv",
-  records: number[][],
+  records: string[][],
   title:string,
   colortype: string,
   size: MapSize

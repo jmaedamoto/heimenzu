@@ -9,16 +9,16 @@ const cellValue = (val:number, size:MapSize) => {
   }
 }
 
-export const Cell = ({val, size,colortype,remark,updatePosition}:{val:number, size:MapSize ,colortype:string,remark:boolean,updatePosition: () => void}) => {
+export const Cell = ({val, size,colortype,remark,updatePosition}:{val:string, size:MapSize ,colortype:string,remark:boolean,updatePosition: () => void}) => {
   return (
     <div
       className="cell"
       onMouseOver={() => updatePosition()}
       css={css`
-        background:${val ? color(colortype,val): ""};
+        background-color:${val ? color(colortype,Number(val)): ""};
         border-right: 1px solid #999;
         border-top: 1px solid #999;
-        ${remark ? "border: 1px solid blue" : ""};
+        ${remark ? "border: 2px solid blue" : ""};
         width:${size == MapSize.Small ? "10px" : "20px"};
         height: ${size == MapSize.Small ? "7px" : "14px"};
         margin: -1px;
@@ -33,7 +33,7 @@ export const Cell = ({val, size,colortype,remark,updatePosition}:{val:number, si
         }
       `}
     >
-      {cellValue(val,size)}
+      {val ? cellValue(Number(val),size) : ""}
     </div> 
   )
 }

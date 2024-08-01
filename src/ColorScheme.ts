@@ -5,25 +5,27 @@ const schemeSet = Object.fromEntries(parse(colorSchemeCsv,{from_line: 2}).map((r
 
 export const color = (title:string, val:number) => {
   const scheme = schemeSet[title]
+  let color = ""
   if(val > Number(scheme[16])){
-    return colorPattern[Number(scheme[17])]
+    color = colorPattern[Number(scheme[17])]
   }else if(val > Number(scheme[14])){
-    return colorPattern[Number(scheme[15])]
+    color = colorPattern[Number(scheme[15])]
   }else if(val > Number(scheme[12])){
-    return colorPattern[Number(scheme[13])]
+    color = colorPattern[Number(scheme[13])]
   }else if(val > Number(scheme[10])){
-    return colorPattern[Number(scheme[11])]
+    color = colorPattern[Number(scheme[11])]
   }else if(val > Number(scheme[8])){
-    return colorPattern[Number(scheme[9])]
+    color = colorPattern[Number(scheme[9])]
   }else if(val > Number(scheme[6])){
-    return colorPattern[Number(scheme[7])]
+    color = colorPattern[Number(scheme[7])]
   }else if(val > Number(scheme[4])){
-    return colorPattern[Number(scheme[5])]
+    color = colorPattern[Number(scheme[5])]
   }else if(val > Number(scheme[2])){
-    return colorPattern[Number(scheme[3])]
+    color = colorPattern[Number(scheme[3])]
   }else{
-    return colorPattern[Number(scheme[1])]
+    color = colorPattern[Number(scheme[1])]
   }
+  return color
 }
 
 interface ColorPattern{
@@ -35,16 +37,16 @@ const colorPattern: ColorPattern = {
   2 : "",
   50 : "rgba(51, 153, 102, 0.8)",
   34 : "rgba(204, 255, 255, 0.8)",
-  41 : "rbga(51, 102, 255, 0.8)",
-  8: "rbga(0, 255, 255, 0.8)",
-  4: "rbga(0, 255, 0, 0.8)",
-  6: "rbga(255, 255, 0, 0.8)",
-  46: "rbga(255, 102, 0, 0.8)",
-  44: "rbga(255, 204, 0, 0.8)",
-  36: "rbga(255, 255, 153, 0.8)",
-  3: "rbga(255, 0, 0, 0.8)",
-  7: "rbga(255, 0, 255, 0.8)",
-  13: "rbga(128, 0, 128, 0.8)",
+  41 : "rgba(51, 102, 255, 0.8)",
+  8: "rgba(0, 255, 255, 0.8)",
+  4: "rgba(0, 255, 0, 0.8)",
+  6: "rgba(255, 255, 0, 0.8)",
+  46: "rgba(255, 102, 0, 0.8)",
+  44: "rgba(255, 204, 0, 0.8)",
+  36: "rgba(255, 255, 153, 0.8)",
+  3: "rgba(255, 0, 0, 0.8)",
+  7: "rgba(255, 0, 255, 0.8)",
+  13: "rgba(128, 0, 128, 0.8)",
   101: "rgba(221, 242, 225, 0.8)",
   102: "rgba(0, 176, 240, 0.8)",
   103: "rgba(0, 176, 80, 0.8)",

@@ -19,6 +19,9 @@ export const CsvMap = ({setting}: {setting:CsvDataSetting}) =>  {
   const openModal = () => setModalSetting({isOpen:true,setting:setting})
   const [position, setPosition] = useState<[number,number]>([-1,-1])
   const {title,records,size,colortype,remarkPoints} = setting
+  if(records.length < 1){
+    return <div>データがありません</div>
+  }
   return (
     <>
       <div className="status">{position[0] < 0 ? title : `${title} 緯度:${(35.85 - position[0] * 0.05).toFixed(2)} 経度:${position[1] * 0.0625 + 133.375}  ${records[position[0]][position[1]]}`}</div>
