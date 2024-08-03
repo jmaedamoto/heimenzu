@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-
+import  { css } from '@emotion/react'
 import { useAtom } from "jotai"
 import { useEffect, useState } from "react"
 import { CsvDataSetting, PngDataSetting, settingAtom} from "./state"
@@ -206,57 +206,67 @@ export const Menu = () => {
 
   return(
     <>
-      府県
-      <select
-        value={prefecture}
-        onChange={e => {
-          setPrefecture(e.target.value)
-          setRegion(regions[e.target.value][0])
-        }}
-      >
-        {Object.entries(regions).map(([key,_]) => <option key={key}>{key}</option>)}
-      </select>
+      <div
+        css={css`
+          color:red;
+          font-weight: bold;
+        `}
+      >（注）「警報以上」「注意報」「注意報未満」の画像には不具合があり、マスが本来より1つ上にずれています。
+        <br/>　　これらは全体の雰囲気をつかむための参考資料としてご利用ください（後日、正しいものに差し替えます）
+      </div>
+      <div>
+        府県
+        <select
+          value={prefecture}
+          onChange={e => {
+            setPrefecture(e.target.value)
+            setRegion(regions[e.target.value][0])
+          }}
+        >
+          {Object.entries(regions).map(([key,_]) => <option key={key}>{key}</option>)}
+        </select>
 
-      領域
-      <select
-        value={region}
-        onChange={e => setRegion(e.target.value)}
-      >
-        {regions[prefecture].map(val => <option key={val}>{val}</option>)}
-      </select>
+        領域
+        <select
+          value={region}
+          onChange={e => setRegion(e.target.value)}
+        >
+          {regions[prefecture].map(val => <option key={val}>{val}</option>)}
+        </select>
 
-      気圧面
-      <select
-        value={plane}
-        onChange={e => {
-          setPlane(e.target.value)
-          setElement(elements[e.target.value][0])
-        }}
-      >
-        {Object.entries(elements).map(([key,_]) => <option key={key}>{key}</option>)}
-      </select>
+        気圧面
+        <select
+          value={plane}
+          onChange={e => {
+            setPlane(e.target.value)
+            setElement(elements[e.target.value][0])
+          }}
+        >
+          {Object.entries(elements).map(([key,_]) => <option key={key}>{key}</option>)}
+        </select>
 
-      要素
-      <select
-        value={element}
-        onChange={e => setElement(e.target.value)}
-      >
-        {elements[plane].map(val => <option key={val}>{val}</option>)}
-      </select>
+        要素
+        <select
+          value={element}
+          onChange={e => setElement(e.target.value)}
+        >
+          {elements[plane].map(val => <option key={val}>{val}</option>)}
+        </select>
 
-      基準
-      <select
-        value={method}
-        onChange={e => setMethod(e.target.value)}
-      >
-        {Object.entries(methods).map(([key,_]) => <option key={key}>{key}</option>)}
-      </select>
+        基準
+        <select
+          value={method}
+          onChange={e => setMethod(e.target.value)}
+        >
+          {Object.entries(methods).map(([key,_]) => <option key={key}>{key}</option>)}
+        </select>
 
-      <button
-        onClick={view}
-      >
-        表示
-      </button>
+        <button
+          onClick={view}
+        >
+          表示
+        </button>
+      </div>
     </>
   )
 }

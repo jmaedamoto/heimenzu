@@ -24,7 +24,7 @@ export const CsvMap = ({setting}: {setting:CsvDataSetting}) =>  {
   }
   return (
     <>
-      <div className="status">{position[0] < 0 ? title : `${title} 緯度:${(35.85 - position[0] * 0.05).toFixed(2)} 経度:${position[1] * 0.0625 + 133.375}  ${records[position[0]][position[1]]}`}</div>
+      <div className="status">{position[0] < 0 ? title : `${title} 緯度:${(35.85 - position[0] * 0.05).toFixed(2)} 経度:${position[1] * 0.0625 + 133.375}  値:${records[position[0]][position[1]]}`}</div>
       <div
         className="map"
         css={css`
