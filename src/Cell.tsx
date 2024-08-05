@@ -5,7 +5,7 @@ import { MapSize } from './MapArea'
 
 const cellValue = (val:number, size:MapSize) => {
   if(size == MapSize.Learge){
-    return Math.abs(val) >= 1 ? Math.round(Number(val)) : Number(val).toFixed(2)
+    return Math.abs(val) >= 1 || Math.abs(val) == 0 ? Math.round(Number(val)) : Number(val).toFixed(2)
   }
 }
 
@@ -18,7 +18,7 @@ export const Cell = ({val, size,colortype,remark,updatePosition}:{val:string, si
         background-color:${val ? color(colortype,Number(val)): ""};
         border-right: 1px solid #999;
         border-top: 1px solid #999;
-        ${remark ? "border: 2px solid blue" : ""};
+        ${remark ? "border: 1px solid blue" : ""};
         width:${size == MapSize.Small ? "10px" : "20px"};
         height: ${size == MapSize.Small ? "7px" : "14px"};
         margin: -1px;
