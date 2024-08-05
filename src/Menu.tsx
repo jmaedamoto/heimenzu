@@ -195,7 +195,6 @@ export const Menu = () => {
   const view = async () => {    
     const size = methods[method].length > 1 ? MapSize.Small : MapSize.Learge
     const setting = await Promise.all(methods[method].map(d => processDatum(d,prefecture,region,plane,element,size)))
-    console.log(setting)
     setSetting(setting)
   }
 
