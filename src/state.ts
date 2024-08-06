@@ -29,3 +29,6 @@ export const settingAtom = atom<Setting[]>([])
 export const modalSettingAtom = atom<ModalSetting>({
   isOpen:false,
 })
+
+export const showBikouAtom = atom<boolean>(false)
+export const showExplornationAtom = atom<boolean>(false) 

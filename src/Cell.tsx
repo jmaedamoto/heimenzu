@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import  { css } from '@emotion/react'
-import {color} from './ColorScheme'
+import {ColorScheme} from './ColorScheme'
 import { MapSize } from './MapArea'
 
 const cellValue = (val:number, size:MapSize) => {
@@ -9,13 +9,13 @@ const cellValue = (val:number, size:MapSize) => {
   }
 }
 
-export const Cell = ({val, size,colortype,remark,updatePosition}:{val:string, size:MapSize ,colortype:string,remark:boolean,updatePosition: () => void}) => {
+export const Cell = ({val, size,colorScheme,remark,updatePosition}:{val:string, size:MapSize ,colorScheme: ColorScheme,remark:boolean,updatePosition: () => void}) => {
   return (
     <div
       className="cell"
       onMouseOver={() => updatePosition()}
       css={css`
-        background-color:${val ? color(colortype,Number(val)): ""};
+        background-color:${val ? colorScheme.colorLiteral(Number(val)): ""};
         border-right: 1px solid #999;
         border-top: 1px solid #999;
         ${remark ? "border: 1px solid blue" : ""};
@@ -28,6 +28,7 @@ export const Cell = ({val, size,colortype,remark,updatePosition}:{val:string, si
         overflow: hidden;
         box-sizing: border-box;
         display: table-cell;
+        position: relative;
         &:hover {
           border: 1px solid red;
         }

@@ -2,7 +2,7 @@
 import  { css } from '@emotion/react'
 import { useAtom } from "jotai"
 import { useEffect, useState } from "react"
-import { CsvDataSetting, PngDataSetting, settingAtom} from "./state"
+import { CsvDataSetting, PngDataSetting, settingAtom, showBikouAtom, showExplornationAtom} from "./state"
 import axios from "axios"
 import { parse } from "csv-parse/sync"
 import { MapSize } from "./MapArea" 
@@ -98,8 +98,8 @@ const methods: Methods = {
 }
 
 const getPrefix = (prefecture:string,region:string,plane:string,element:string,method: string) => {
-  let root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_A"
-  //let root = "./"
+  //let root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_A"
+  let root = "./"
   if(prefecture.includes("（B地点）")){
     prefecture = prefecture.replace("（B地点）", "")
     root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_B"
@@ -155,7 +155,7 @@ const processDatum  = async (data:Data, prefecture:string,region:string,plane:st
       const [records,refRecords] = await fetchDiffCsv(data,prefecture,region,plane,element)
       const remarkPoints = 
         refRecords.map((row, i) => row.map((val,j) => [val,i,j])).flat()
-        .filter((record) => record[0] && Number(record[0]) < 0.01 && Number(record[0]) > 0)
+        .filter((record) => record[0] && Number(record[0]) <= 0.01 && Number(record[0]) > 0)
         .map((record) => [Number(record[1]),Number(record[2])])
       const setting:CsvDataSetting = {
         type:"csv",
@@ -203,6 +203,9 @@ export const Menu = () => {
     boot()
   }, [])
 
+  const [_showBikou, setShowBikou] = useAtom(showBikouAtom)
+  const [_showExplornation, setShowExplornation] = useAtom(showExplornationAtom)
+
   return(
     <>
       <div
@@ -213,7 +216,12 @@ export const Menu = () => {
       >（注）「警報以上」「注意報」「注意報未満」の画像には不具合があり、マスが本来より1つ上にずれています。
         <br/>　　これらは全体の雰囲気をつかむための参考資料としてご利用ください（後日、正しいものに差し替えます）
       </div>
-      <div>
+      <div
+        css={css`
+          display: flex;
+          flex-wrap: nowrap;
+        `}
+      >
         府県
         <select
           value={prefecture}
@@ -265,6 +273,28 @@ export const Menu = () => {
         >
           表示
         </button>
+        <div 
+          css={css`
+            margin-left:5px;
+            text-decoration:underline;
+            color: blue;
+          `}
+          onMouseOver={() => setShowExplornation(true)}
+          onMouseOut={() => setShowExplornation(false)}
+        >
+          要素一覧
+        </div>
+        <div 
+          css={css`
+            margin-left:5px;
+            text-decoration:underline;
+            color: blue;
+          `}
+          onMouseOver={() => setShowBikou(true)}
+          onMouseOut={() => setShowBikou(false)}
+        >
+          備考
+        </div>
       </div>
     </>
   )
