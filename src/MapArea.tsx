@@ -4,11 +4,11 @@ import { Buffer } from 'buffer'
 window.Buffer = window.Buffer || Buffer
 import {CsvMap} from './CsvMap'
 import {PngMap} from './PngMap'
-import { Setting, settingAtom } from './state'
+import { rootStateAtom, Setting } from './state'
 import { useAtom } from 'jotai'
 
 export enum MapSize{
-  Learge,
+  Large,
   Small
 }
 
@@ -24,7 +24,8 @@ const Map = ({setting}:{setting:Setting}) => {
 }
 
 export const MapArea = () => {
-  const [setting,_] = useAtom(settingAtom)
+  const [rootState,_] = useAtom(rootStateAtom)
+  const {setting} = rootState
   return (
     <div css={css`
       display: grid;

@@ -4,7 +4,7 @@ import {ColorScheme} from './ColorScheme'
 import { MapSize } from './MapArea'
 
 const cellValue = (val:number, size:MapSize) => {
-  if(size == MapSize.Learge){
+  if(size == MapSize.Large){
     return Math.abs(val) >= 1 || Math.abs(val) == 0 ? Math.round(Number(val)) : Number(val).toFixed(2)
   }
 }
@@ -18,13 +18,16 @@ export const Cell = ({val, size,colorScheme,remark,updatePosition}:{val:string, 
         background-color:${val ? colorScheme.colorLiteral(Number(val)): ""};
         border-right: 1px solid #999;
         border-top: 1px solid #999;
-        ${remark ? "border: 1px solid blue" : ""};
+        ${remark ? 
+          "border: solid blue;border-width: 2px;" 
+          : ""
+        }
         width:${size == MapSize.Small ? "10px" : "20px"};
         height: ${size == MapSize.Small ? "7px" : "14px"};
         margin: -1px;
         padding: 0px;
         text-align: center;
-        ${size == MapSize.Learge ? "font-size: 8px;" : ""}
+        ${size == MapSize.Large ? "font-size: 8px;" : ""}
         overflow: hidden;
         box-sizing: border-box;
         display: table-cell;

@@ -6,7 +6,7 @@ import { CsvMap } from "./CsvMap"
 import { MapSize } from "./MapArea"
 
 const Map = ({setting}:{setting:Setting}) => {
-    const modalSetting = {...setting, size:MapSize.Learge}
+    const modalSetting = {...setting, size:MapSize.Large}
 
     switch(modalSetting.type){
       case "png":{

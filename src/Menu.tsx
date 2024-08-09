@@ -1,8 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import  { css } from '@emotion/react'
 import { useAtom } from "jotai"
-import { useEffect, useState } from "react"
-import { CsvDataSetting, PngDataSetting, settingAtom, showBikouAtom, showExplornationAtom} from "./state"
+import { useEffect } from "react"
+import { CsvDataSetting, PngDataSetting, RootState, SelectedMenu, rootStateAtom, showBikouAtom, showExplornationAtom} from "./state"
 import axios from "axios"
 import { parse } from "csv-parse/sync"
 import { MapSize } from "./MapArea" 
@@ -98,8 +98,8 @@ const methods: Methods = {
 }
 
 const getPrefix = (prefecture:string,region:string,plane:string,element:string,method: string) => {
-  //let root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_A"
-  let root = "./"
+  let root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_A"
+  //let root = "./"
   if(prefecture.includes("（B地点）")){
     prefecture = prefecture.replace("（B地点）", "")
     root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_B"
@@ -110,7 +110,6 @@ const getPrefix = (prefecture:string,region:string,plane:string,element:string,m
 }
 
 const fetchCsv = async (url:string) => {
-  //const tmpurl = new URL(url, import.meta.url).href
   const tmpurl = url
   
   const data = (await axios.get(tmpurl)).data
@@ -119,7 +118,7 @@ const fetchCsv = async (url:string) => {
     row.shift()
     return row
   }) as string[][];
-  return records
+  return records.slice(0,69)
 }
 
 const fetchDiffCsv = async (diffCsvData:DiffCsvData,prefecture:string,region:string,plane:string,element:string) => {
@@ -140,7 +139,6 @@ const processDatum  = async (data:Data, prefecture:string,region:string,plane:st
   switch( data.type){
     case "png": {
       const [root,title] = getPrefix(prefecture,region,plane,element,data.prefix)
-      //const url = new URL(`${root}/${title}.png`, import.meta.url).href
       const url = `${root}/${title}.png`
       const setting:PngDataSetting =  {
         type:"png",
@@ -184,24 +182,103 @@ const processDatum  = async (data:Data, prefecture:string,region:string,plane:st
 }
 
 export const Menu = () => {
-  const [_, setSetting] = useAtom(settingAtom)
+  const [rootState, setRootState] = useAtom(rootStateAtom)
 
-  let [prefecture, setPrefecture] = useState("大阪")
-  const [region, setRegion] = useState("A_大阪北部")
-  const [plane, setPlane] = useState("500")
-  const [element, setElement] = useState("EPT")
-  const [method, setMethod] = useState("警報以上")
+  const setPrefecture = (prefecture:string) => {
+    const region = regions[prefecture][0]
+    const newSelectedMenu = {
+      ...rootState.selectedMenu,
+      prefecture,
+      region,
+    }
+    view(newSelectedMenu)
+  }
 
-  const view = async () => {    
-    const size = methods[method].length > 1 ? MapSize.Small : MapSize.Learge
+  const setRegion = (region:string) => {
+    const newSelectedMenu = {
+      ...rootState.selectedMenu,
+      region,
+    }
+    view(newSelectedMenu)
+  }
+
+  const setPlane = (plane:string, elementIndex = 0) => {
+    const element = elements[plane][elementIndex]
+    const newSelectedMenu = {
+      ...rootState.selectedMenu,
+      plane,
+      element,
+    }
+    view(newSelectedMenu)
+  }
+
+  const setElement = (element: string) => {
+    const newSelectedMenu = {
+      ...rootState.selectedMenu,
+      element,
+    }
+    view(newSelectedMenu)
+  }
+
+  const setMethod = (method: string) => {
+    const newSelectedMenu = {
+      ...rootState.selectedMenu,
+      method,
+    }
+    view(newSelectedMenu)
+  } 
+
+  const view = async (selectedMenu:SelectedMenu) => {  
+    const {prefecture,region,plane,element,method} = selectedMenu
+    const size = methods[method].length > 1 ? MapSize.Small : MapSize.Large
     const setting = await Promise.all(methods[method].map(d => processDatum(d,prefecture,region,plane,element,size)))
-    setSetting(setting)
+    setRootState({
+      selectedMenu,
+      setting
+    })
+  }
+
+  const changeMenu = (i:number, rootState:RootState) => {
+    const {plane,element} = rootState.selectedMenu
+    const planes = Object.entries(elements).map(([key,_]) => key)
+    let elementIndex = elements[plane].findIndex(e => e == element)
+    let planeIndex = planes.findIndex(p  => p == plane)
+    if(elementIndex + i >= elements[plane].length){
+      planeIndex = (planeIndex + 1 + planes.length) % planes.length
+      setPlane(planes[planeIndex])
+    }else if(elementIndex + i < 0){
+      planeIndex = (planeIndex  - 1 + planes.length) % planes.length
+      const newPlane = planes[planeIndex]
+      setPlane(newPlane,elements[newPlane].length - 1)
+    }else{
+      elementIndex = (elementIndex + elements[plane].length + i) % elements[plane].length
+      setElement(elements[plane][elementIndex])
+    }
+
+  }
+
+  const keyDownHandler = (e: KeyboardEvent, rootState:RootState) => {
+    e.preventDefault()
+    const key = e.code;
+    if (key === 'ArrowUp') {
+      changeMenu(-1,rootState)
+    }
+    if (key === 'ArrowDown') {
+      changeMenu(1,rootState)
+    }
   }
 
   useEffect(() => {
-    const boot = async () => await view()
+    const boot = async () => await view(rootState.selectedMenu)
     boot()
   }, [])
+
+
+
+  useEffect(() => {
+    document.addEventListener('keydown', 
+      (e: KeyboardEvent) => keyDownHandler(e,rootState),  {once: true})
+  }, [rootState])
 
   const [_showBikou, setShowBikou] = useAtom(showBikouAtom)
   const [_showExplornation, setShowExplornation] = useAtom(showExplornationAtom)
@@ -217,6 +294,7 @@ export const Menu = () => {
         <br/>　　これらは全体の雰囲気をつかむための参考資料としてご利用ください（後日、正しいものに差し替えます）
       </div>
       <div
+        tabIndex={-1} 
         css={css`
           display: flex;
           flex-wrap: nowrap;
@@ -224,10 +302,9 @@ export const Menu = () => {
       >
         府県
         <select
-          value={prefecture}
+          value={rootState.selectedMenu.prefecture}
           onChange={e => {
             setPrefecture(e.target.value)
-            setRegion(regions[e.target.value][0])
           }}
         >
           {Object.entries(regions).map(([key,_]) => <option key={key}>{key}</option>)}
@@ -235,18 +312,17 @@ export const Menu = () => {
 
         領域
         <select
-          value={region}
+          value={rootState.selectedMenu.region}
           onChange={e => setRegion(e.target.value)}
         >
-          {regions[prefecture].map(val => <option key={val}>{val}</option>)}
+          {regions[rootState.selectedMenu.prefecture].map(val => <option key={val}>{val}</option>)}
         </select>
 
         気圧面
         <select
-          value={plane}
+          value={rootState.selectedMenu.plane}
           onChange={e => {
             setPlane(e.target.value)
-            setElement(elements[e.target.value][0])
           }}
         >
           {Object.entries(elements).map(([key,_]) => <option key={key}>{key}</option>)}
@@ -254,25 +330,20 @@ export const Menu = () => {
 
         要素
         <select
-          value={element}
+          value={rootState.selectedMenu.element}
           onChange={e => setElement(e.target.value)}
         >
-          {elements[plane].map(val => <option key={val}>{val}</option>)}
+          {elements[rootState.selectedMenu.plane].map(val => <option key={val}>{val}</option>)}
         </select>
 
         基準
         <select
-          value={method}
+          value={rootState.selectedMenu.method}
           onChange={e => setMethod(e.target.value)}
         >
           {Object.entries(methods).map(([key,_]) => <option key={key}>{key}</option>)}
         </select>
 
-        <button
-          onClick={view}
-        >
-          表示
-        </button>
         <div 
           css={css`
             margin-left:5px;

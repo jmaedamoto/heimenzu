@@ -30,6 +30,9 @@ export const CsvMap = ({setting}: {setting:CsvDataSetting}) =>  {
       <div className="status">{position[0] < 0 ? title : `${title} 緯度:${(35.85 - position[0] * 0.05).toFixed(2)} 経度:${position[1] * 0.0625 + 133.375}  値:${records[position[0]][position[1]]}`}</div>
       <div
         className="map"
+        onMouseOut={() => {
+          setPosition([-1,-1])
+        }}
         css={css`
           background:url(${mapImage}) no-repeat top center / ${size == MapSize.Small ? "650px 357px" : "1300px 714px"};
           height: ${size == MapSize.Small ? "490px" : "980px"};
