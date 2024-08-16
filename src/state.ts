@@ -1,5 +1,10 @@
 import { atom } from 'jotai'
-import { MapSize } from './MapArea'
+
+export enum MapSize{
+  Large,
+  Small,
+  XSmall
+}
 
 export type CsvDataSetting = {
   type:"csv",

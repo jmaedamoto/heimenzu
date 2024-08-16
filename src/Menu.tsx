@@ -2,10 +2,9 @@
 import  { css } from '@emotion/react'
 import { useAtom } from "jotai"
 import { useEffect } from "react"
-import { CsvDataSetting, PngDataSetting, RootState, SelectedMenu, rootStateAtom, showBikouAtom, showExplornationAtom} from "./state"
+import { CsvDataSetting, MapSize, PngDataSetting, RootState, SelectedMenu, rootStateAtom, showBikouAtom, showExplornationAtom} from "./state"
 import axios from "axios"
 import { parse } from "csv-parse/sync"
-import { MapSize } from "./MapArea" 
 
 interface Region{
   [key:string]: string[]
@@ -95,11 +94,13 @@ const methods: Methods = {
   "p値（警報以上-注意報未満(R3≧5mm)）":[pvalNoalert],
   "比較（警報以上、注意報、差分、p値（警報以上-注意報））":[warning,alert,diffAlert,pvalAlert],
   "比較（警報以上、注意報未満(R3≧5mm)、差分、p値（警報以上-注意報未満\(R3≧5mm\)））":[warning,noalert,diffNoalert,pvalNoalert],
+  "比較（警報以上、注意報、差分）":[warning,alert,diffAlert],
+  "比較（警報以上、注意報未満(R3≧5mm)、差分）":[warning,noalert,diffNoalert],
 }
 
 const getPrefix = (prefecture:string,region:string,plane:string,element:string,method: string) => {
-  let root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_A"
-  //let root = "./"
+  //let root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_A"
+  let root = "./"
   if(prefecture.includes("（B地点）")){
     prefecture = prefecture.replace("（B地点）", "")
     root = "http://www2.os.met.kishou.go.jp/yoken/R6/tool/sw_sinsui_ave_env/point_B"
@@ -228,9 +229,23 @@ export const Menu = () => {
     view(newSelectedMenu)
   } 
 
+  const setMapSize = (methodsLength: number): MapSize => {
+    switch(methodsLength){
+      case 3: {
+        return MapSize.XSmall
+      }
+      case 4: {
+        return MapSize.Small
+      }
+      default: {
+        return MapSize.Large
+      }
+    }
+  }
+
   const view = async (selectedMenu:SelectedMenu) => {  
     const {prefecture,region,plane,element,method} = selectedMenu
-    const size = methods[method].length > 1 ? MapSize.Small : MapSize.Large
+    const size = setMapSize(methods[method].length)
     const setting = await Promise.all(methods[method].map(d => processDatum(d,prefecture,region,plane,element,size)))
     setRootState({
       selectedMenu,

@@ -53,10 +53,11 @@ export const ColorBar = ({scheme}:{scheme:ColorScheme}) => {
 
   return (
     <>
-      <div css={css`
-        display: flex;
-        flex-wrap: wrap;
-        width: 650px;
+      <div key="colorbar"
+        css={css`
+          display: flex;
+          flex-wrap: wrap;
+          width: 650px;
       `}>
         {panels}
         {scheme.name != "p値" &&

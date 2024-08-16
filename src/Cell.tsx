@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import  { css } from '@emotion/react'
 import {ColorScheme} from './ColorScheme'
-import { MapSize } from './MapArea'
+import { MapSize } from './state'
 
 const cellValue = (val:number, size:MapSize) => {
   if(size == MapSize.Large){
@@ -9,7 +9,26 @@ const cellValue = (val:number, size:MapSize) => {
   }
 }
 
+const Layout= {
+  [MapSize.Large] : {
+    height: "14px",
+    width: "20px",
+    borderWidth: "2px",
+  },
+  [MapSize.Small] : {
+    height: "7px",
+    width: "10px",
+    borderWidth: "1px",
+  },
+  [MapSize.XSmall]: {
+    height: "6px",
+    width: "8px",
+    borderWidth: "1px",
+  },
+} 
+
 export const Cell = ({val, size,colorScheme,remark,updatePosition}:{val:string, size:MapSize ,colorScheme: ColorScheme,remark:boolean,updatePosition: () => void}) => {
+  const layout = Layout[size]
   return (
     <div
       className="cell"
@@ -19,11 +38,11 @@ export const Cell = ({val, size,colorScheme,remark,updatePosition}:{val:string, 
         border-right: 1px solid #999;
         border-top: 1px solid #999;
         ${remark ? 
-          "border: solid blue;border-width: 2px;" 
+          "border: solid blue;border-width: " + layout.borderWidth + ";" 
           : ""
         }
-        width:${size == MapSize.Small ? "10px" : "20px"};
-        height: ${size == MapSize.Small ? "7px" : "14px"};
+        width:${layout.width};
+        height: ${layout.height};
         margin: -1px;
         padding: 0px;
         text-align: center;

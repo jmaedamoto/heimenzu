@@ -1,9 +1,8 @@
 import { useAtom } from "jotai"
-import { modalSettingAtom, Setting } from "./state"
+import { MapSize, modalSettingAtom, Setting } from "./state"
 import Modal  from "react-modal"
 import { PngMap } from "./PngMap"
 import { CsvMap } from "./CsvMap"
-import { MapSize } from "./MapArea"
 
 const Map = ({setting}:{setting:Setting}) => {
     const modalSetting = {...setting, size:MapSize.Large}
